@@ -1,20 +1,34 @@
 package br.ce.wcaquino.tasks.functional;
 
+import java.net.URL;
 import java.time.Duration;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class TasksTest {
 
 	public WebDriver acessarAplicacao() {
-		WebDriver driver = new ChromeDriver();
-		driver.navigate().to("http://localhost:8001/tasks");
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-		return driver;
+		try {
+			// Configurar as opções do Chrome
+			ChromeOptions options = new ChromeOptions();
+
+			// Inicializar o RemoteWebDriver com as opções do Chrome
+			WebDriver driver = new RemoteWebDriver(new URL("http://172.19.0.1:4444"), options);
+
+			// Acessar a aplicação
+			driver.navigate().to("http://localhost:8001/tasks");
+			driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+
+			return driver;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Falha ao conectar ao WebDriver remoto.", e);
+		}
 	}
 
 	@Test
